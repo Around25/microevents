@@ -42,8 +42,8 @@ consul.notify(MQ_SERVICE_NAME, function (service) {
   eventManager.connect(service, () => {
 
     // send some test events
-    this.dispatcher.trigger({event: 'auth.login', username: 'john', 'pass': 'secret'});
-    this.dispatcher.trigger({event: 'auth.login', username: 'jane', 'pass': 'doe'});
+    eventManager.dispatcher.trigger({event: 'auth.login', username: 'john', 'pass': 'secret'});
+    eventManager.dispatcher.trigger({event: 'auth.login', username: 'jane', 'pass': 'doe'});
   });
 });
 ```
