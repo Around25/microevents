@@ -1,0 +1,30 @@
+{
+  "name": "microevents",
+  "version": "0.1.0",
+  "description": "A micro framework for microservices.",
+  "homepage": "https://github.com/Around25/microevents",
+  "bugs": {
+    "url": "https://github.com/Around25/microevents/issues"
+  },
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Around25/microevents"
+  },
+  "keywords": [
+    "events",
+    "microservice",
+    "AMQP",
+    "rabbitmq"
+  ],
+  "author": {
+    "name": "Cosmin Harangus",
+    "email": "cosmin@around25.com",
+    "url": "https://around25.com"
+  },
+  "license": "BSD-3",
+  "dependencies": {
+    "amqplib": "^0.4.0",
+    "consul": "^0.23.0"
+  }
+}
