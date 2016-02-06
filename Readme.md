@@ -30,39 +30,57 @@ let consul = require('microevents').consul;
 let EventManager = require('microevents').EventManager;
 let eventHandlers = require('./event-handlers');
 
-// init consul
-consul.init();
+// Connect to the consul server on port 8500
+consul.init('localhost', 8500);
 
 // wait for queue service to start
 consul.notify(MQ_SERVICE_NAME, function (service) {
   let eventManager = new EventManager();
   eventManager.setHandlers(eventHandlers);
+  eventManager.once('ready', () => {
+    // send some test events
+    eventManager.dispatcher.trigger({event: 'auth.register', username: 'john', 'pass': 'secret'});
+    eventManager.dispatcher.trigger({event: 'auth.register', username: 'jane', 'pass': 'doe'});
+  });
 
   // connect to the queue service and register all events handlers
-  eventManager.connect(service, () => {
-
-    // send some test events
-    eventManager.dispatcher.trigger({event: 'auth.login', username: 'john', 'pass': 'secret'});
-    eventManager.dispatcher.trigger({event: 'auth.login', username: 'jane', 'pass': 'doe'});
-  });
+  eventManager.connect(service);
 });
 ```
 
-In order to listen for events create some handles like this:
+In order to listen for events create some handlers like this:
 
 ```js
 let BaseHandler = require('microevents').BaseHandler;
-class AuthLoginHandler extends BaseHandler{
-  handle(event) {
-    console.log("Login event received:", event);
+class AuthRegisterHandler extends BaseHandler{
+  registerListeners() {
+    console.log('registering handle methods');
+    this.on('auth.register', this.onAuthRegister.bind(this));
+  }
+
+  onAuthRegister(event) {
+    console.log('register', event);
+    // generate a unique id
+    let requestId = event.username;
+    // wait to process the reply for the next triggered event
+    this.once('entity.saved.' + requestId, (replyEvent) => {
+      console.log('entity saved', replyEvent);
+    });
+    // save the user by calling another event handler
+    // use trigger to send through the AMQP server
+    // the handler will trigger another event with 'entity.saved.' + event.requestId
+    this.trigger({
+      event: 'entity.save',
+      replyId: requestId,
+    });
   }
 
   getHandledEvents() {
-    return ['auth.login'];
+    return ['auth.register', 'entity.saved.*'];
   }
 }
 
-module.exports = AuthLoginHandler;
+module.exports = AuthRegisterHandler;
 ```
 
 License

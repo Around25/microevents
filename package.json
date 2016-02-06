@@ -1,6 +1,6 @@
 {
   "name": "microevents",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A micro framework for microservices.",
   "homepage": "https://github.com/Around25/microevents",
   "bugs": {
@@ -15,7 +15,7 @@
     "events",
     "microservice",
     "AMQP",
-    "rabbitmq"
+    "eventemitter"
   ],
   "author": {
     "name": "Cosmin Harangus",
