@@ -13,6 +13,7 @@ class BaseHandler extends EventEmitter {
     this.dispatcher = dispatcher;
     dispatcher.on('message', (event, ack) => {
       this.emit(event.event, event, ack);
+      this.emit('#', event, ack);
     });
     this.registerListeners();
   }
