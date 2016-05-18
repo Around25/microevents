@@ -26,13 +26,11 @@ function notify(name, callback) {
           _processResponse(callback, data);
         }, console.error);
     } else {
-      console.error("Waiting for service to come online: ", name);
       let watch = consul.watch({
         method: consul.catalog.service.nodes,
         options: {service: name}
       });
       watch.on('change', (data, res) => {
-        console.log(data, res);
         _processResponse(callback, data);
       });
 

@@ -9,27 +9,31 @@ class Transport extends EventEmitter {
 
   constructor(options) {
     super();
-    this.options = options || {noAck: false};
+    this.options = options || {noAck: false, heartbeat: 2};
     this.connection = null;
     this.channel = null;
     this.exchange = TRANSPORT_EXCHANGE;
     this.queue = TRANSPORT_QUEUE;
-    this._onError = this.emit.bind(this, 'error');
+    this._onError = this.notify.bind(this, 'error');
     this._ack = this.ack.bind(this);
+  }
+
+  notify(event, data){
+    this.emit(event, data);
   }
 
   connect(host, port) {
     port = port || 5672;
     // connect to the AMQP server
-    let open = amqplib.connect('amqp://'+ host + ':' + port +'//');
+    let open = amqplib.connect('amqp://'+ host + ':' + port +'//?heartbeat=' + this.options.heartbeat);
     // wait for the connection to be established
     return open.then((conn) => {
         this.connection = conn;
         // listen for events from the server
         conn.on('error', this._onError);
-        conn.on('close', this.emit.bind(this, 'close'));
-        conn.on('blocked', this.emit.bind(this, 'blocked'));
-        conn.on('unblocked', this.emit.bind(this, 'unblocked'));
+        conn.on('close', this.notify.bind(this, 'close'));
+        conn.on('blocked', this.notify.bind(this, 'blocked'));
+        conn.on('unblocked', this.notify.bind(this, 'unblocked'));
         // create a communication channel
         return conn.createChannel()
           .then((channel) => {
