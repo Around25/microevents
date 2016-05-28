@@ -99,6 +99,13 @@ class Transport extends EventEmitter {
   }
 
   /**
+   * Unbind the queue from an event type
+   */
+  unbindFrom(name) {
+    this.channel.unbindQueue(this.queue, this.exchange, name);
+  }
+
+  /**
    * Send an event to the AMQP server
    */
   trigger(event) {

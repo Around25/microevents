@@ -30,6 +30,17 @@ class BaseHandler extends EventEmitter {
   }
 
   /**
+   * Unregister from the given events
+   * @param {array} events
+   */
+  unregister(events) {
+    events = events ? events : this.getHandledEvents();
+    for (let i = 0; i < events.length; i++) {
+      this.dispatcher.unbindFrom(events[i]);
+    }
+  }
+
+  /**
    * Trigger a new event on the network
    */
   trigger(event) {

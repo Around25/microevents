@@ -21,6 +21,10 @@ class EventManager extends EventEmitter {
     this.emit(event, data);
   }
 
+  trigger(event) {
+    this.dispatcher.trigger(event);
+  }
+
   setHandlers(handlers) {
     this.handlers = handlers;
   }
