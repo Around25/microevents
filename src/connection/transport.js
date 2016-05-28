@@ -80,7 +80,12 @@ class Transport extends EventEmitter {
       this.ack(msg);
     }
     let event = JSON.parse(msg.content.toString());
-    this.emit('message', event, this._ack.bind(this, msg));
+    let ack = this._ack.bind(this, msg);
+    // emit a message event and a unique event
+    this.emit('message', event, ack);
+    if (event.event !== 'message') {
+      this.emit(event.event, event, ack);
+    }
   }
 
   ack(msg) {
