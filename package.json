@@ -1,6 +1,6 @@
 {
   "name": "microevents",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A micro framework for microservices.",
   "homepage": "https://github.com/Around25/microevents",
   "bugs": {
